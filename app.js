@@ -1,5 +1,8 @@
 var SlackBot = require('slackbots');
 var Parse = require('parse/node');
+var app = require('express');
+
+app.listen(process.env.PORT || 8080);
 
 Parse.serverURL = 'https://parseapi.back4app.com';
 
