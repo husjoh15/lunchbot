@@ -47,6 +47,7 @@ function todaysLunch () {
     var date = new Date();
     const Lunchlist = Parse.Object.extend('Lunchlist');
     const query = new Parse.Query(Lunchlist);
+    const channel = 'test-lunchbot';
     //query.equalTo('lunch', 'pizza');
     query.equalTo('dato', getFullDate(date));
     query.find().then((results) => {
@@ -56,15 +57,15 @@ function todaysLunch () {
       if (parsed.length === 1)
       {
         lunch = parsed[0].lunch;
-        bot.postMessageToChannel('test-lunchbot', 'Dagens lunsj er ```' + lunch + ' ``` ', paramsLunch);
+        bot.postMessageToChannel(channel, 'Dagens lunsj er: ```' + lunch + ' ``` ', paramsLunch);
       }
       else if (parsed.length === 0)
       {
-        bot.postMessageToChannel('test-lunchbot', 'Det er ikke registrert noen lunsj i dag ', paramsNoLunch);
+        bot.postMessageToChannel(channel, 'Det er ikke registrert noen lunsj i dag ', paramsNoLunch);
       }
       else 
       {
-        bot.postMessageToChannel('test-lunchbot', 'Det er registrert flere enn 1 lunsj i dag :thinking_face: ', paramsManyLunch);
+        bot.postMessageToChannel(channel, 'Det er registrert flere enn 1 lunsj i dag :thinking_face: ', paramsManyLunch);
       }
       
     }, (error) => {
