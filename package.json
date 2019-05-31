@@ -4,6 +4,9 @@
   "description": "Simple testing Node server",
   "main": "app.js",
   "author": "Johannes Husa",
+  "scripts": {
+    "start": "node app.js"
+  },
   "dependencies": {
     "parse": "^2.4.0",
     "slackbots": "^1.2.0"
