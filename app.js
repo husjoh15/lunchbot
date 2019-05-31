@@ -56,7 +56,7 @@ function todaysLunch () {
     var date = new Date();
     const Lunchlist = Parse.Object.extend('Lunchlist');
     const query = new Parse.Query(Lunchlist);
-    const channel = 'test-lunchbot';
+    const channel = 'ux-general';
     //query.equalTo('lunch', 'pizza');
     query.equalTo('dato', getFullDate(date));
     query.find().then((results) => {
