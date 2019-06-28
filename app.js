@@ -1,3 +1,4 @@
+require('dotenv').config();
 var SlackBot = require('slackbots');
 var Parse = require('parse/node');
 var express = require('express');
@@ -20,7 +21,7 @@ Parse.initialize(
 );
 
 const bot = new SlackBot({
-    token: 'xoxb-2556485562-651410196912-pZDt6cziY42gB57P4tRM2UNb',
+    token: process.env.SLACK_OAUTH_ACCESS_TOKEN,
     name: 'lunchbot'
 }); 
 
