@@ -1,6 +1,7 @@
 var SlackBot = require('slackbots');
 var Parse = require('parse/node');
 var express = require('express');
+var schedule = require('node-schedule');
 
 var app = express();
 
@@ -23,17 +24,45 @@ const bot = new SlackBot({
     name: 'lunchbot'
 }); 
 
+var posted = false;
+
+schedule.scheduleJob('30 11 * * *', function(){
+    if (posted == false){
+        todaysLunch('test-lunchbot');
+        posted = true;
+    }
+  });
+
+schedule.scheduleJob('0 0 * * *', function(){
+    posted = false;
+  });
+
 bot.on('message', (data) => {
     if(data.type !== 'message'){
         return;
     }
-    handelMessage(data.text);
-    
+    if(data.username !== 'lunchbot' && data.subtype != 'message_replied')
+    {
+        
+        if(data.text.includes("<@UK5C25SSU>"))
+        {
+            handleMessage(data);
+        }
+    }
+
+    console.log(data);
 })
 
-function handelMessage(message) {
-    if(message.includes(' dagens lunsj')){
-        todaysLunch();
+function handleMessage(data) {
+    if(data.text.includes(' dagens lunsj')) {
+        todaysLunch(data.channel);
+        posted = true;
+    }
+    else {
+        var emoji = {
+            icon_emoji: ':robot_face:'
+        }
+        bot.postMessage(data.channel, 'Jeg er under utvikling og svarer bare på kommandoen `@Lunchbot dagens lunsj`', emoji);
     }
     // if(message.includes(' add lunch')){
     //     var time = new Date();
@@ -42,10 +71,7 @@ function handelMessage(message) {
     // }
 }
 
-function todaysLunch () {
-    var paramsLunch = {
-        icon_emoji: ':hamburger:'
-    }
+function todaysLunch (channel) {
     var paramsNoLunch = {
         icon_emoji: ':pepehands:'
     }
@@ -56,8 +82,6 @@ function todaysLunch () {
     var date = new Date();
     const Lunchlist = Parse.Object.extend('Lunchlist');
     const query = new Parse.Query(Lunchlist);
-    const channel = 'ux-general';
-    //query.equalTo('lunch', 'pizza');
     query.equalTo('dato', getFullDate(date));
     query.find().then((results) => {
       if (typeof document !== 'undefined') document.write(`Lunchlist found1: ${JSON.stringify(results)}`);
@@ -66,15 +90,15 @@ function todaysLunch () {
       if (parsed.length === 1)
       {
         lunch = parsed[0].lunch;
-        bot.postMessageToChannel(channel, 'Dagens lunsj er: ```' + lunch + ' ``` ', paramsLunch);
+        bot.postMessage(channel, 'Dagens lunsj er: ```' + lunch + ' ``` ', getParams(lunch.toLowerCase()));
       }
       else if (parsed.length === 0)
       {
-        bot.postMessageToChannel(channel, 'Det er ikke registrert noen lunsj i dag ', paramsNoLunch);
+        bot.postMessage(channel, 'Det er ikke registrert noen lunsj i dag ', paramsNoLunch);
       }
       else 
       {
-        bot.postMessageToChannel(channel, 'Det er registrert flere enn 1 lunsj i dag :thinking_face: ', paramsManyLunch);
+        bot.postMessage(channel, 'Det er registrert flere enn 1 lunsj i dag :thinking_face: ', paramsManyLunch);
       }
       
     }, (error) => {
@@ -83,6 +107,41 @@ function todaysLunch () {
     });
 }
 
+function getParams (lunch) {
+    if (lunch.includes('burger'))
+        return {icon_emoji: ':hamburger:'}
+    else if (lunch.includes('storfe'))
+        return {icon_emoji: ':cut_of_meat:'}
+    else if (lunch.includes('potet'))
+        return {icon_emoji: ':potato:'}
+    else if (lunch.includes('bacon'))
+        return {icon_emoji: ':bacon:'}
+    else if (lunch.includes('meat'))
+        return {icon_emoji: ':cut_of_meat:'}
+    else if (lunch.includes('pølse'))
+        return {icon_emoji: ':hotdog:'}
+    else if (lunch.includes('fries'))
+        return {icon_emoji: ':fries:'}
+    else if (lunch.includes('kylling'))
+        return {icon_emoji: ':chicken:'}
+    else if (lunch.includes('chicken'))
+        return {icon_emoji: ':chicken:'}
+    else if (lunch.includes('pork'))
+        return {icon_emoji: ':cut_of_meat:'}
+    else if (lunch.includes(' is '))
+        return {icon_emoji: ':icecream:'}
+    else if (lunch.includes('pommes frites'))
+        return {icon_emoji: ':fries:'}
+    else if (lunch.includes('pizza'))
+        return {icon_emoji: ':pizza:'}
+    else if (lunch.includes('innovation lunch'))
+        return {icon_emoji: ':bulb:'}
+    else if (lunch.includes('gulrot'))
+        return {icon_emoji: ':carrot:'}
+    else 
+        return {icon_emoji: ':robot_face:'}
+     
+}
 
 
 // function addLunch (lunch, date) {
