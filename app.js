@@ -3,8 +3,32 @@ var SlackBot = require('slackbots');
 var Parse = require('parse/node');
 var express = require('express');
 var schedule = require('node-schedule');
+var mongoose = require('mongoose');
 
 var app = express();
+
+// mongoose.connect(process.env.MONGO_DB_PATH, {useNewUrlParser: true});
+// var db = mongoose.connection;
+// db.on('error', console.error.bind(console, 'connection error:'));
+// db.once('open', function() {
+//   // we're connected!
+// });
+// var lunchSchema = new mongoose.Schema({
+//     name: String,
+//     date: String,
+//     posted: String
+//   });
+
+// var Lunch = mongoose.model('Lunch', lunchSchema);
+// var pizza = new Lunch({name: 'pizza', date: '28/6/2019', posted: false})
+// console.log(pizza.name);
+
+// pizza.save(function (err, pizza) {
+//     if (err) return console.error(err);
+//     console.log(pizza.posted);
+//   });
+
+
 
 app.get('/', function (req, res) {
     res.send('Hello World');
@@ -44,7 +68,6 @@ bot.on('message', (data) => {
     }
     if(data.username !== 'lunchbot' && data.subtype != 'message_replied')
     {
-        
         if(data.text.includes("<@UK5C25SSU>"))
         {
             handleMessage(data);
@@ -92,6 +115,7 @@ function todaysLunch (channel) {
       {
         lunch = parsed[0].lunch;
         bot.postMessage(channel, 'Dagens lunsj er: ```' + lunch + ' ``` ', getParams(lunch.toLowerCase()));
+        posted = true;
       }
       else if (parsed.length === 0)
       {
@@ -106,6 +130,8 @@ function todaysLunch (channel) {
       if (typeof document !== 'undefined') document.write(`Error while fetching Lunchlist: ${JSON.stringify(error)}`);
       console.error('Error while fetching Lunchlist', error);
     });
+    var lunches = Lunch.find({name: 'pizza'}).findOne();
+    console.log(lunches.schema.object)
 }
 
 function getParams (lunch) {
