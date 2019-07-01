@@ -68,13 +68,14 @@ bot.on('message', (data) => {
     }
     if(data.username !== 'lunchbot' && data.subtype != 'message_replied')
     {
+        console.log(data);
         if(data.text.includes("<@UK5C25SSU>"))
         {
             handleMessage(data);
         }
     }
 
-    console.log(data);
+    
 })
 
 function handleMessage(data) {
