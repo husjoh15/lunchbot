@@ -80,8 +80,18 @@ bot.on('message', (data) => {
 
 function handleMessage(data) {
     if(data.text.includes(' dagens lunsj')) {
-        todaysLunch(data.channel);
-        posted = true;
+        var emoji = {
+            icon_emoji: ':party_parrot:'
+        }
+        if (data.user == 'UC1P036RX')
+        {
+            bot.postMessage(data.channel, "Dagens lunsj er: ```2 Polarbrød med smøreost```", emoji);
+        }
+        else {
+            todaysLunch(data.channel);
+            posted = true;
+        }
+        
     }
     else {
         var emoji = {
@@ -138,6 +148,8 @@ function todaysLunch (channel) {
 function getParams (lunch) {
     if (lunch.includes('burger'))
         return {icon_emoji: ':hamburger:'}
+    else if (lunch.includes('kalkun'))
+        return {icon_emoji: ':turkey:'}
     else if (lunch.includes('storfe'))
         return {icon_emoji: ':cut_of_meat:'}
     else if (lunch.includes('potet'))
