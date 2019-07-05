@@ -84,7 +84,7 @@ function handleMessage(data) {
             icon_emoji: ':party_parrot:'
         }
         var akselEmoji = {
-            icon_emoji: 'hypers'
+            icon_emoji: ':hypers:'
         }
 
         if (data.user == 'UC1P036RX')
