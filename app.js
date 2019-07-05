@@ -53,7 +53,7 @@ var posted = false;
 
 schedule.scheduleJob('30 11 * * *', function(){
     if (posted == false){
-        todaysLunch('test-lunchbot');
+        todaysLunch('test-lunchbot', false);
         posted = true;
     }
   });
@@ -96,13 +96,10 @@ function handleMessage(data) {
             bot.postMessage(data.channel, "Dagens lunsj er: ```Rislunsj```", akselEmoji);
         }
         else if (data.user == 'U276V7G2F'){
-            todaysLunch(data.channel);
-            bot.postMessage(data.channel, "Håper ikke du får forstoppelse");
-            posted = true;
+            todaysLunch(data.channel, true);
         }
         else {
-            todaysLunch(data.channel);
-            posted = true;
+            todaysLunch(data.channel, false);
         }
 
     }
@@ -119,7 +116,7 @@ function handleMessage(data) {
     // }
 }
 
-function todaysLunch (channel) {
+function todaysLunch (channel, geir) {
     var paramsNoLunch = {
         icon_emoji: ':pepehands:'
     }
@@ -143,6 +140,8 @@ function todaysLunch (channel) {
         lunch = parsed[0].lunch;
         bot.postMessage(channel, 'Dagens lunsj er: ```' + lunch + ' ``` ', getParams(lunch.toLowerCase()));
         posted = true;
+        if (geir)
+          bot.postMessage(channel, "Håper ikke du får forstoppelse!");
       }
       else if (parsed.length === 0)
       {
