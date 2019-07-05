@@ -3,7 +3,7 @@ var SlackBot = require('slackbots');
 var Parse = require('parse/node');
 var express = require('express');
 var schedule = require('node-schedule');
-var mongoose = require('mongoose');
+//var mongoose = require('mongoose');
 
 var app = express();
 
@@ -47,7 +47,7 @@ Parse.initialize(
 const bot = new SlackBot({
     token: process.env.SLACK_OAUTH_ACCESS_TOKEN,
     name: 'lunchbot'
-}); 
+});
 
 var posted = false;
 
@@ -75,23 +75,36 @@ bot.on('message', (data) => {
         }
     }
 
-    
+
 })
 
 function handleMessage(data) {
     if(data.text.includes(' dagens lunsj')) {
-        var emoji = {
+        var danielEmoji = {
             icon_emoji: ':party_parrot:'
         }
+        var akselEmoji = {
+            icon_emoji: 'hypers'
+        }
+
         if (data.user == 'UC1P036RX')
         {
-            bot.postMessage(data.channel, "Dagens lunsj er: ```2 Polarbrød med smøreost```", emoji);
+            bot.postMessage(data.channel, "Dagens lunsj er: ```2 Polarbrød med smøreost```", danielEmoji);
+        }
+        else if (data.user == 'UCLP4J332')
+        {
+            bot.postMessage(data.channel, "Dagens lunsj er: ```Rislunsj```", akselEmoji);
+        }
+        else if (data.user == 'U276V7G2F'){
+            todaysLunch(data.channel);
+            bot.postMessage(data.channel, "Håper ikke du får forstoppelse");
+            posted = true;
         }
         else {
             todaysLunch(data.channel);
             posted = true;
         }
-        
+
     }
     else {
         var emoji = {
@@ -113,6 +126,9 @@ function todaysLunch (channel) {
     var paramsManyLunch = {
         icon_emoji: ':monkas:'
     }
+    var vacation = {
+        icon_emoji: ':sun_with_face:'
+    }
 
     var date = new Date();
     const Lunchlist = Parse.Object.extend('Lunchlist');
@@ -130,19 +146,20 @@ function todaysLunch (channel) {
       }
       else if (parsed.length === 0)
       {
-        bot.postMessage(channel, 'Det er ikke registrert noen lunsj i dag ', paramsNoLunch);
+        bot.postMessage(channel, "Jeg er på ferie. \n \n  !futurequote lunchbot", vacation);
+        // bot.postMessage(channel, 'Det er ikke registrert noen lunsj i dag ', paramsNoLunch);
       }
-      else 
+      else
       {
         bot.postMessage(channel, 'Det er registrert flere enn 1 lunsj i dag :thinking_face: ', paramsManyLunch);
       }
-      
+
     }, (error) => {
       if (typeof document !== 'undefined') document.write(`Error while fetching Lunchlist: ${JSON.stringify(error)}`);
       console.error('Error while fetching Lunchlist', error);
     });
-    var lunches = Lunch.find({name: 'pizza'}).findOne();
-    console.log(lunches.schema.object)
+    //var lunches = Lunch.find({name: 'pizza'}).findOne();
+    //console.log(lunches.schema.object)
 }
 
 function getParams (lunch) {
@@ -178,9 +195,9 @@ function getParams (lunch) {
         return {icon_emoji: ':bulb:'}
     else if (lunch.includes('gulrot'))
         return {icon_emoji: ':carrot:'}
-    else 
+    else
         return {icon_emoji: ':robot_face:'}
-     
+
 }
 
 
@@ -207,6 +224,8 @@ function getFullDate(date) {
     return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
 }
 
+function cola() {
+    return ':cola::cola::cola::cola::cola:        :cola::cola::cola::cola::cola::cola:     :cola:                                          :cola: \n:cola:                               :cola:                       :cola:     :cola:                                       :cola::cola: \n:cola:                               :cola:                       :cola:     :cola:                                     :cola:    :cola: \n:cola:                               :cola:                       :cola:     :cola:                                   :cola:        :cola: \n:cola:                               :cola:                       :cola:     :cola:                                 :cola:            :cola: \n:cola:                               :cola:                       :cola:     :cola:                               :cola::cola::cola::cola::cola: \n:cola:                               :cola:                       :cola:     :cola:                             :cola:                      :cola: \n:cola:                               :cola:                       :cola:     :cola:                           :cola:                          :cola: \n:cola::cola::cola::cola::cola:        :cola::cola::cola::cola::cola::cola:     :cola::cola::cola::cola::cola:  :cola:                              :cola: ';
+}
 
 bot.on('error', (err) => console.log(err));
-
