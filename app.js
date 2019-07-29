@@ -51,7 +51,7 @@ const bot = new SlackBot({
 
 var posted = false;
 
-schedule.scheduleJob('30 11 * * *', function(){
+schedule.scheduleJob('30 9 * * *', function(){
     if (posted == false){
         todaysLunch('test-lunchbot', false);
         posted = true;
@@ -123,9 +123,6 @@ function todaysLunch (channel, geir) {
     var paramsManyLunch = {
         icon_emoji: ':monkas:'
     }
-    var vacation = {
-        icon_emoji: ':sun_with_face:'
-    }
 
     var date = new Date();
     const Lunchlist = Parse.Object.extend('Lunchlist');
@@ -145,8 +142,7 @@ function todaysLunch (channel, geir) {
       }
       else if (parsed.length === 0)
       {
-        bot.postMessage(channel, "Jeg er på ferie. \n \n  !futurequote lunchbot", vacation);
-        // bot.postMessage(channel, 'Det er ikke registrert noen lunsj i dag ', paramsNoLunch);
+        bot.postMessage(channel, 'Det er ikke registrert noen lunsj i dag ', paramsNoLunch);
       }
       else
       {
