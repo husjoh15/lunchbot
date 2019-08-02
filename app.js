@@ -192,7 +192,6 @@ function getParams (lunch) {
         return {icon_emoji: ':carrot:'}
     else
         return {icon_emoji: ':robot_face:'}
-
 }
 
 
