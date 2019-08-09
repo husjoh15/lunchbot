@@ -138,7 +138,7 @@ function todaysLunch (channel, geir) {
         bot.postMessage(channel, 'Dagens lunsj er: ```' + lunch + ' ``` ', getParams(lunch.toLowerCase()));
         posted = true;
         if (geir)
-          bot.postMessage(channel, "Håper ikke du får forstoppelse!");
+          bot.postMessage(channel, "Håper ikke du får forstoppelse!"); 
       }
       else if (parsed.length === 0)
       {
