@@ -135,10 +135,11 @@ function todaysLunch (channel, geir) {
       if (parsed.length === 1)
       {
         lunch = parsed[0].lunch;
-        bot.postMessage(channel, 'Dagens lunsj er: ```' + lunch + ' ``` ', getParams(lunch.toLowerCase()));
         posted = true;
         if (geir)
-          bot.postMessage(channel, "Håper ikke du får forstoppelse!"); 
+          bot.postMessage(channel, 'Dagens lunsj er: ```' + lunch + ' ``` ' + 'Håper ikke du får forstoppelse!', getParams(lunch.toLowerCase()));
+        else 
+          bot.postMessage(channel, 'Dagens lunsj er: ```' + lunch + ' ``` ', getParams(lunch.toLowerCase()));
       }
       else if (parsed.length === 0)
       {
