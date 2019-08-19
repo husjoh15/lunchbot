@@ -143,7 +143,7 @@ function todaysLunch (channel, geir) {
       }
       else if (parsed.length === 0)
       {
-        bot.postMessage(channel, 'Det er ikke registrert noen lunsj i dag ', paramsNoLunch);
+        bot.postMessage(channel, 'Det er ikke registrert noen lunsj i dag. Kanskje det er noe registrert her? https://k6.retailsolution.no/meny ', paramsNoLunch);
       }
       else
       {
