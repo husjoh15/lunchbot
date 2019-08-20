@@ -49,19 +49,6 @@ const bot = new SlackBot({
     name: 'lunchbot'
 });
 
-var posted = false;
-
-schedule.scheduleJob('30 9 * * *', function(){
-    if (posted == false){
-        todaysLunch('test-lunchbot', false);
-        posted = true;
-    }
-  });
-
-schedule.scheduleJob('0 0 * * *', function(){
-    posted = false;
-  });
-
 bot.on('message', (data) => {
     if(data.type !== 'message'){
         return;
