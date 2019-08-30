@@ -137,7 +137,7 @@ function handleMessage(data) {
         var emoji = {
             icon_emoji: ':robot_face:'
         }
-        bot.postMessage(data.channel, 'Tilgjengelige kommandoer: \n `Dagens` Dagens meny \n `Ukens` Ukens meny \n `Cola` Cola', emoji);
+        bot.postMessage(data.channel, 'Jeg svarer bare på følgende kommandoer: \n `Dagens` Dagens meny \n `Ukens` Ukens meny \n `Cola` Cola', emoji);
     }
 }
 
