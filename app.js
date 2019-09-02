@@ -25,7 +25,7 @@ var app = express();
 //     console.log(pizza.posted);
 //   });
 
-var weeklyMenu = "";
+var weeklyMenu = ""; 
 var url = 'https://k6.retailsolution.no/meny';
 
 app.get('/', function (req, res) {
