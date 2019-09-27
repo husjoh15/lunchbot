@@ -124,8 +124,8 @@ bot.on('message', (data) => {
             }
         }
     }
-    catch {
-        console.log("Noe fungerte ikke: " + data.toString());
+    catch(error) {
+        console.log("Noe fungerte ikke: " + error);
     }
 
 
