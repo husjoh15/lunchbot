@@ -1,6 +1,8 @@
 require('dotenv').config();
 var SlackBot = require('slackbots');
 var express = require('express');
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var app = express();
 
@@ -28,11 +30,11 @@ var app = express();
 var weeklyMenu = ""; 
 var url = 'https://k6.retailsolution.no/meny';
 
+app.listen(process.env.PORT, '127.0.0.1');
+
 app.get('/', function (req, res) {
     res.send('Hello World');
  })
-
-app.listen(process.env.PORT, '0.0.0.0');
 
 const bot = new SlackBot({
     token: process.env.SLACK_OAUTH_ACCESS_TOKEN,
@@ -74,7 +76,7 @@ function getMondayMenu(){
 }
 function getTuesdayMenu(){
     var menu = weeklyMenu.split(/Tirsdag:*/g)[1];
-    var menu1 = menu.split(/Onsdag:*/g)[0].replace('*','').replace('*','');
+    var menu1 = menu.split(/Onsdag:*/g)[0].replace('*','').replace('*','').replace(':','');
     return menu1;
 }
 function getWednesdayMenu(){
@@ -93,10 +95,10 @@ function getFridayMenu(){
 }
 
 function formatResponseText(responseText){
-    var changed = responseText.replace(/<[^>]*>?/gm, '');
-    var weeklyMenuGibberish = changed.match("Uke (.*)Dagens");
-    var weeklyRemoveGibberish = weeklyMenuGibberish[0].replace(/&amp;/g,'&').replace(/&nbsp;/g,' ');
-    weeklyMenu = weeklyRemoveGibberish.replace(/Mandag:/g, '\n *Mandag:* \n')
+    const dom = new JSDOM(responseText);
+    const weekly = dom.window.document.querySelector("div.static-container").textContent.replace(/\n|\r/g, "");
+    weeklyMenu = weekly.replace(/Ukens meny/g, '*Ukens meny* \n ')
+    .replace(/Mandag:/g, '\n *Mandag:* \n')
     .replace(/Tirsdag:/g, '\n\n *Tirsdag*: \n')
     .replace(/Onsdag:/g, '\n\n *Onsdag:* \n')
     .replace(/Torsdag:/g, '\n\n *Torsdag:* \n')
@@ -104,20 +106,26 @@ function formatResponseText(responseText){
     .replace(/Hoved:/g, '_Hoved:_ \n')
     .replace(/Vegetarisk:/g, '\n _Vegetarisk:_ \n')
     .replace(/Suppe:/g, '\n _Suppe:_ \n');
+    console.log(weeklyMenu);
     return weeklyMenu;
 }
 
 bot.on('message', (data) => {
-    if(data.type !== 'message'){
-        return;
-    }
-    if(data.username !== 'lunchbot' && data.subtype != 'message_replied' && data.subtype !== 'message_changed')
-    {
-        console.log(data);
-        if(data.text.includes("<@UK5C25SSU>"))
-        {
-            handleMessage(data);
+    try{
+        if(data.type !== 'message'){
+            return;
         }
+        if(data.username !== 'lunchbot' && data.subtype != 'message_replied' && data.subtype != 'message_changed')
+        {
+            console.log(data);
+            if(data.text.includes("<@UK5C25SSU>"))
+            {
+                handleMessage(data);
+            }
+        }
+    }
+    catch{
+        console.log("Noe fungerte ikke: " + data.toString());
     }
 
 
@@ -141,8 +149,23 @@ function handleMessage(data) {
     }
 }
 
+function getWeekNumber(date) {
+    // Copy date so don't modify original
+    date = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    // Set to nearest Thursday: current date + 4 - current day number
+    // Make Sunday's day number 7
+    date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay()||7));
+    // Get first day of year
+    var yearStart = new Date(Date.UTC(date.getUTCFullYear(),0,1));
+    // Calculate full weeks to nearest Thursday
+    var weekNo = Math.ceil(( ( (date - yearStart) / 86400000) + 1)/7);
+    // Return array of year and week number
+    return weekNo;
+}
+
 function cola() {
     return ':cola::cola::cola::cola::cola:        :cola::cola::cola::cola::cola::cola:     :cola:                                          :cola: \n:cola:                               :cola:                       :cola:     :cola:                                       :cola::cola: \n:cola:                               :cola:                       :cola:     :cola:                                     :cola:    :cola: \n:cola:                               :cola:                       :cola:     :cola:                                   :cola:        :cola: \n:cola:                               :cola:                       :cola:     :cola:                                 :cola:            :cola: \n:cola:                               :cola:                       :cola:     :cola:                               :cola::cola::cola::cola::cola: \n:cola:                               :cola:                       :cola:     :cola:                             :cola:                      :cola: \n:cola:                               :cola:                       :cola:     :cola:                           :cola:                          :cola: \n:cola::cola::cola::cola::cola:        :cola::cola::cola::cola::cola::cola:     :cola::cola::cola::cola::cola:  :cola:                              :cola: ';
 }
 
 bot.on('error', (err) => console.log(err));
+bot.on('close', (err) => console.log(err));
