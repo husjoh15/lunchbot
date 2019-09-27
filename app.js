@@ -111,7 +111,7 @@ function formatResponseText(responseText){
 }
 
 bot.on('message', (data) => {
-    try{
+    try {
         if(data.type !== 'message'){
             return;
         }
@@ -124,7 +124,7 @@ bot.on('message', (data) => {
             }
         }
     }
-    catch{
+    catch {
         console.log("Noe fungerte ikke: " + data.toString());
     }
 
